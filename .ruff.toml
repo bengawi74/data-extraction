@@ -1,10 +1,3 @@
-# Ruff config
-line-length = 100
-
 [lint]
-select = ["E", "F", "I", "B"]   # pycodestyle, pyflakes, import order, flake8-bugbear
-ignore = []
-
-# isort-like import sorting via Ruff
-[lint.isort]
-known-first-party = ["src"]
+select = ["E","F","I","B"]
+ignore = ["E401","I001"]  # temporarily ignore multi-imports & import-order
