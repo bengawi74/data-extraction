@@ -27,8 +27,8 @@ jobs:
     env:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       FORCE_COLOR: "1"
-      CLI_BIN: "datax"
-      PACKAGE_NAME: "data_extraction_anwar"
+      CLI_BIN: "datax"                 # adjust if your CLI command differs
+      PACKAGE_NAME: "data_extraction_anwar"  # your import package
 
     steps:
       - name: Checkout
@@ -38,9 +38,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
+          cache: "pip"
 
-      - name: Install project
+      - name: Install project and tooling
         shell: bash
         run: |
           set -euo pipefail
@@ -53,27 +53,26 @@ jobs:
           elif [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
           fi
-          python -m pip install pytest pytest-cov >/dev/null 2>&1 || true
-          python -m pip install ruff black >/dev/null 2>&1 || true
+          python -m pip install pytest pytest-cov ruff black >/dev/null 2>&1 || true
 
-      - name: Lint (ruff if available)
+      - name: Lint (ruff if installed)
         shell: bash
         run: |
-          if python - <<'PY'
-import importlib,sys; sys.exit(0 if importlib.util.find_spec("ruff") else 1)
-PY
-          then ruff check .
-          else echo "ruff not installed; skipping."
+          set -e
+          if python -c "import importlib,sys; sys.exit(0 if importlib.util.find_spec('ruff') else 1)"; then
+            ruff check .
+          else
+            echo "ruff not installed; skipping."
           fi
 
-      - name: Format check (black --check if available)
+      - name: Format check (black --check if installed)
         shell: bash
         run: |
-          if python - <<'PY'
-import importlib,sys; sys.exit(0 if importlib.util.find_spec("black") else 1)
-PY
-          then black --check .
-          else echo "black not installed; skipping."
+          set -e
+          if python -c "import importlib,sys; sys.exit(0 if importlib.util.find_spec('black') else 1)"; then
+            black --check .
+          else
+            echo "black not installed; skipping."
           fi
 
       - name: Run tests with coverage
@@ -81,13 +80,11 @@ PY
         env:
           PYTHONWARNINGS: ignore
         run: |
-          if python - <<'PY'
-import importlib,sys; sys.exit(0 if importlib.util.find_spec("pytest") else 1)
-PY
-          then
+          set -e
+          if python -c "import importlib,sys; sys.exit(0 if importlib.util.find_spec('pytest') else 1)"; then
             pytest -q \
               --maxfail=1 --disable-warnings \
-              --cov="$PACKAGE_NAME" --cov-report=term-missing \
+              --cov=\"$PACKAGE_NAME\" --cov-report=term-missing \
               --cov-report=xml:coverage.xml
           else
             echo "pytest not installed; skipping tests."
@@ -105,7 +102,7 @@ PY
           "$CLI_BIN" --help >/dev/null 2>&1 || true
 
       - name: Upload coverage to Codecov
-        if: always() && hashFiles('coverage.xml') != ''
+        if: ${{ always() && hashFiles('coverage.xml') != '' }}
         uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
