@@ -1,0 +1,2 @@
+[console_scripts]
+datax = src.cli:main

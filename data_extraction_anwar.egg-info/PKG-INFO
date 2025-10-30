@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: data-extraction-anwar
+Version: 0.1.0
+Summary: Toy data extraction / transform / load demo
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: requests
+Requires-Dist: python-dotenv
+Requires-Dist: sqlalchemy
+Requires-Dist: matplotlib
+
+
+## CI Status
+![CI](https://github.com/bengawi74/data-extraction/actions/workflows/ci.yml/badge.svg)
