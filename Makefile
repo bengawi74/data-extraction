@@ -1,4 +1,4 @@
-.PHONY: install extract validate eda transform all clean
+.PHONY: install extract validate eda transform db sql all clean
 
 install:
 	python -m pip install --upgrade pip
@@ -16,7 +16,14 @@ eda:
 transform:
 	source .venv/bin/activate && python -m src.transform
 
-all: extract validate eda transform
+db:
+	source .venv/bin/activate && python -m src.load_db
+
+# Run a SQL file against the SQLite DB (macOS has sqlite3 preinstalled)
+sql:
+	sqlite3 data/warehouse.db < queries/top_cities.sql
+
+all: extract validate eda transform db
 
 clean:
-	rm -rf data/processed/*.csv data/processed/*.parquet reports/ data/cleaned/
+	rm -rf data/processed/*.csv data/processed/*.parquet reports/ data/cleaned/ data/warehouse.db
