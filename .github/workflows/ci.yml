@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
 
 jobs:
@@ -13,43 +13,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.9
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: Show environment
+        run: |
+          python -V
+          pip -V
+          uname -a
 
-      - name: Install dependencies
+      - name: Install deps (prod + dev)
         run: |
           python -m pip install --upgrade pip
-          # app/runtime deps (already have a requirements.txt)
-          pip install -r requirements.txt || true
-          # dev/test deps
-          pip install -r requirements-dev.txt
-          # coverage plugin (already installed locally, install here too)
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
           pip install pytest-cov
 
-      - name: Lint (Ruff)
+      - name: Lint (ruff)
         run: ruff check .
 
-      - name: Format check (Black)
+      - name: Format (black --check)
         run: black --check .
 
-      - name: Tests + Coverage
-        # pytest.ini already sets --cov and --cov-fail-under
+      - name: Run tests with coverage (uses pytest.ini)
+        env:
+          PYTHONWARNINGS: ignore
         run: pytest -q
 
-      - name: Upload coverage report (artifact)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-raw
-          path: ./.coverage
-          if-no-files-found: ignore
+      - name: If failed, print tree and config
+        if: failure()
+        run: |
+          echo "::group::Project tree"
+          ls -la
+          echo "::endgroup::"
+          echo "::group::Show pytest.ini / .coveragerc / requirements"
+          [ -f pytest.ini ] && sed -n '1,200p' pytest.ini || true
+          [ -f .coveragerc ] && sed -n '1,200p' .coveragerc || true
+          [ -f requirements.txt ] && sed -n '1,200p' requirements.txt || true
+          [ -f requirements-dev.txt ] && sed -n '1,200p' requirements-dev.txt || true
+          echo "::endgroup::"
