@@ -1,0 +1,4 @@
+order_id,customer_id,name,city,email,valid_email,amount,amount_bucket,total_todos,completed_todos,completion_rate,api_user_id,username
+1,1,Alice,Toronto,sincere@april.biz,True,100,mid,20,11,0.55,1,Bret
+2,2,Bob,Ottawa,shanna@melissa.tv,True,150,high,20,8,0.4,2,Antonette
+3,3,Cara,Markham,nathan@yesenia.net,True,90,low,20,7,0.35,3,Samantha

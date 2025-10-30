@@ -1,8 +1,8 @@
 import json
 import os
+import argparse
 import pathlib
 import logging
-from typing import Tuple
 
 import pandas as pd
 import requests
@@ -16,14 +16,12 @@ OUT = BASE / "data" / "processed"
 RAW.mkdir(parents=True, exist_ok=True)
 OUT.mkdir(parents=True, exist_ok=True)
 
-# ----- logging -----
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s"
-)
-log = logging.getLogger("extract")
+def setup_logging(level: str):
+    lvl = getattr(logging, level.upper(), logging.INFO)
+    logging.basicConfig(level=lvl, format="%(asctime)s %(levelname)s %(message)s")
+    return logging.getLogger("extract")
 
-def session_with_retry(timeout: int) -> Tuple[requests.Session, int]:
+def session_with_retry(timeout: int) -> requests.Session:
     s = requests.Session()
     retry = Retry(
         total=5,
@@ -34,7 +32,8 @@ def session_with_retry(timeout: int) -> Tuple[requests.Session, int]:
     )
     s.mount("http://", HTTPAdapter(max_retries=retry))
     s.mount("https://", HTTPAdapter(max_retries=retry))
-    return s, timeout
+    s.request_timeout = timeout  # attach for convenience
+    return s
 
 def make_demo_inputs():
     (BASE/"data"/"sales.csv").write_text(
@@ -48,41 +47,32 @@ def make_demo_inputs():
         ]
     }, indent=2))
 
-def fetch_json(s: requests.Session, url: str, timeout: int, filename: str) -> pathlib.Path:
+def fetch_json(s: requests.Session, url: str, filename: str, log: logging.Logger) -> pathlib.Path:
     log.info("GET %s", url)
-    r = s.get(url, timeout=timeout)
+    r = s.get(url, timeout=getattr(s, "request_timeout", 20))
     r.raise_for_status()
     path = RAW/filename
     path.write_text(r.text)
     log.info("Saved raw -> %s", path)
     return path
 
-def main():
-    # env
-    load_dotenv(BASE / ".env")
-    api_base = os.getenv("API_BASE", "https://jsonplaceholder.typicode.com").rstrip("/")
-    timeout = int(os.getenv("TIMEOUT", "20"))
-
-    s, timeout = session_with_retry(timeout)
-
+def build_dataset(api_base: str, timeout: int, log: logging.Logger) -> pd.DataFrame:
+    s = session_with_retry(timeout)
     make_demo_inputs()
 
-    # 1) CSV
+    # 1) CSV + 2) JSON (local demo files)
     orders = pd.read_csv(BASE/"data"/"sales.csv")
-
-    # 2) JSON
     customers = pd.json_normalize(
         json.loads((BASE/"data"/"customers.json").read_text())["customers"]
     )
 
-    # 3) API (users + todos)
-    users_path = fetch_json(s, f"{api_base}/users", timeout, "users.json")
-    todos_path = fetch_json(s, f"{api_base}/todos", timeout, "todos.json")
-
+    # 3) API
+    users_path = fetch_json(s, f"{api_base}/users", "users.json", log)
+    todos_path = fetch_json(s, f"{api_base}/todos", "todos.json", log)
     users = pd.read_json(users_path)
     todos = pd.read_json(todos_path)
 
-    users_small = users.loc[:, ["id", "username", "email"]].rename(columns={"id":"api_user_id"})
+    users_small = users.loc[:, ["id","username","email"]].rename(columns={"id":"api_user_id"})
     todos_small = todos.loc[:, ["userId","id","title","completed"]].rename(
         columns={"userId":"api_user_id","id":"todo_id"}
     )
@@ -97,19 +87,58 @@ def main():
         completed_todos=("completed","sum")
     )
     df = df.merge(todos_stats, on="api_user_id", how="left")
+    return df
 
-    out_csv = OUT/"orders_customers_users.csv"
-    out_parquet = OUT/"orders_customers_users.parquet"
+def save_outputs(df: pd.DataFrame, out_dir: pathlib.Path, write_parquet: bool, log: logging.Logger):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_csv = out_dir/"orders_customers_users.csv"
+    out_parquet = out_dir/"orders_customers_users.parquet"
+
     df.to_csv(out_csv, index=False)
     log.info("Saved csv -> %s", out_csv)
-    try:
-        df.to_parquet(out_parquet, index=False)
-        log.info("Saved parquet -> %s", out_parquet)
-    except Exception as e:
-        log.warning("Parquet save skipped: %s", e)
 
+    if write_parquet:
+        try:
+            df.to_parquet(out_parquet, index=False)
+            log.info("Saved parquet -> %s", out_parquet)
+        except Exception as e:
+            log.warning("Parquet save skipped: %s", e)
+
+def run_validation(df: pd.DataFrame, log: logging.Logger):
+    try:
+        from src.validate import run_validations
+        run_validations(df)
+        log.info("Validation: OK")
+    except Exception as e:
+        log.error("Validation: FAIL -> %s", e)
+        raise SystemExit(1)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Week3 Data Extraction Pipeline")
+    parser.add_argument("--api-base", default=None, help="API base URL (overrides .env)")
+    parser.add_argument("--timeout", type=int, default=None, help="HTTP timeout seconds (overrides .env)")
+    parser.add_argument("--out-dir", default=str(OUT), help="Output directory (default: data/processed)")
+    parser.add_argument("--no-parquet", action="store_true", help="Skip Parquet output")
+    parser.add_argument("--log-level", default="INFO", help="Logging level (DEBUG/INFO/WARN/ERROR)")
+    return parser.parse_args()
+
+def main():
+    # env
+    load_dotenv(BASE/".env")
+    # CLI
+    args = parse_args()
+    log = setup_logging(args.log_level)
+
+    api_base = (args.api_base or os.getenv("API_BASE", "https://jsonplaceholder.typicode.com")).rstrip("/")
+    timeout = int(args.timeout or os.getenv("TIMEOUT", "20"))
+    out_dir = pathlib.Path(args.out_dir)
+
+    df = build_dataset(api_base, timeout, log)
     log.info("Rows: %s | Columns: %s", len(df), len(df.columns))
     print(df.head())
+
+    save_outputs(df, out_dir, write_parquet=not args.no_parquet, log=log)
+    run_validation(df, log)
 
 if __name__ == "__main__":
     main()
