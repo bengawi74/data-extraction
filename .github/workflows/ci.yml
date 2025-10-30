@@ -12,7 +12,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,7 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then python -m pip install -r requirements-dev.txt; fi
-          # Ensure CLIs exist even if the files above are empty/missing
           python -m pip install --upgrade ruff black pytest pytest-cov
 
       - name: Lint (ruff)
@@ -37,7 +35,7 @@ jobs:
       - name: Format (black --check)
         run: python -m black --check .
 
-      - name: Run tests with coverage (uses pytest.ini)
+      - name: Run tests with coverage (pytest.ini controls thresholds)
         env:
           PYTHONWARNINGS: ignore
         run: python -m pytest -q
