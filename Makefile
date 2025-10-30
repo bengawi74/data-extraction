@@ -1,11 +1,16 @@
-.PHONY: install extract clean
+.PHONY: install extract validate all clean
 
 install:
-\tpython -m pip install --upgrade pip
-\tpython -m pip install -r requirements.txt || true
+	python -m pip install --upgrade pip
+	python -m pip install -r requirements.txt || true
 
 extract:
-\tsource .venv/bin/activate && python src/extract_pipeline.py
+	source .venv/bin/activate && python src/extract_pipeline.py
+
+validate:
+	source .venv/bin/activate && python -c "from src.validate import validate_path; validate_path('data/processed/orders_customers_users.csv')"
+
+all: extract validate
 
 clean:
-\trm -rf data/processed/*.csv data/processed/*.parquet
+	rm -rf data/processed/*.csv data/processed/*.parquet
