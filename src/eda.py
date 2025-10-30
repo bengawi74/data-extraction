@@ -1,8 +1,11 @@
-import pathlib, pandas as pd, matplotlib.pyplot as plt
+import pathlib
+
+import matplotlib.pyplot as plt
+import pandas as pd
 
 BASE = pathlib.Path(__file__).resolve().parent.parent
-INP  = BASE / "data" / "processed" / "orders_customers_users.csv"
-RPT  = BASE / "reports"
+INP = BASE / "data" / "processed" / "orders_customers_users.csv"
+RPT = BASE / "reports"
 FIGS = RPT / "figures"
 RPT.mkdir(parents=True, exist_ok=True)
 FIGS.mkdir(parents=True, exist_ok=True)
@@ -15,7 +18,7 @@ print("\nColumns:", ", ".join(df.columns))
 print("\nHead:\n", df.head().to_string(index=False))
 
 # handle describe() for older pandas
-desc = df.describe(include='all')
+desc = df.describe(include="all")
 print("\nDescribe (numeric):\n", desc.T.to_string())
 
 # ---- Charts (saved as PNGs) ----

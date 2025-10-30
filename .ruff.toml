@@ -1,0 +1,10 @@
+# Ruff config
+line-length = 100
+
+[lint]
+select = ["E", "F", "I", "B"]   # pycodestyle, pyflakes, import order, flake8-bugbear
+ignore = []
+
+# isort-like import sorting via Ruff
+[lint.isort]
+known-first-party = ["src"]

@@ -4,3 +4,4 @@ python-dotenv
 pyarrow
 matplotlib
 sqlalchemy
+tabulate

@@ -1,4 +1,5 @@
 import pathlib
+
 import pandas as pd
 from sqlalchemy import create_engine, text
 
@@ -17,18 +18,26 @@ with engine.begin() as conn:
     df.to_sql("orders", conn, if_exists="replace", index=False)
     # helpful indexes
     conn.execute(text("CREATE INDEX IF NOT EXISTS idx_orders_city ON orders(city);"))
-    conn.execute(text("CREATE INDEX IF NOT EXISTS idx_orders_amount ON orders(amount);"))
-    conn.execute(text("CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);"))
+    conn.execute(
+        text("CREATE INDEX IF NOT EXISTS idx_orders_amount ON orders(amount);")
+    )
+    conn.execute(
+        text("CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);")
+    )
 
 # quick sanity query
 with engine.begin() as conn:
     rows = conn.execute(text("SELECT COUNT(*) FROM orders")).scalar()
-    per_city = conn.execute(text("""
+    per_city = conn.execute(
+        text(
+            """
         SELECT city, COUNT(*) AS n, SUM(amount) AS total_amount
         FROM orders
         GROUP BY city
         ORDER BY total_amount DESC
-    """)).fetchall()
+    """
+        )
+    ).fetchall()
 
 print("Rows loaded:", rows)
 print("Totals by city:")

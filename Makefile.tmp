@@ -1,0 +1,33 @@
+.PHONY: install extract validate eda transform db sql report all clean
+
+install:
+	python -m pip install --upgrade pip
+	python -m pip install -r requirements.txt || true
+
+extract:
+	source .venv/bin/activate && python -m src.extract_pipeline
+
+validate:
+	source .venv/bin/activate && python -c "from src.validate import validate_path; validate_path('data/processed/orders_customers_users.csv')"
+
+eda:
+	source .venv/bin/activate && python -m src.eda
+
+transform:
+	source .venv/bin/activate && python -m src.transform
+
+db:
+	source .venv/bin/activate && python -m src.load_db
+
+sql:
+	sqlite3 data/warehouse.db < queries/top_cities.sql
+
+report:
+	source .venv/bin/activate && python -m src.report
+
+all: extract validate eda transform db report
+
+clean:
+	rm -rf data/processed/*.csv data/processed/*.parquet reports/ data/cleaned/ data/warehouse.db
+
+test:
