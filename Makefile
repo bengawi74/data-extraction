@@ -22,3 +22,18 @@ test:
 	source .venv/bin/activate && ruff check .
 	source .venv/bin/activate && black --check .
 	source .venv/bin/activate && pytest --cov=src --cov-report=term-missing -q
+
+install-dev:
+	source .venv/bin/activate && python -m pip install -e .
+
+cli-extract:
+	source .venv/bin/activate && datax extract
+
+cli-transform:
+	source .venv/bin/activate && datax transform
+
+cli-report:
+	source .venv/bin/activate && datax report
+
+cli-all:
+	source .venv/bin/activate && datax all
