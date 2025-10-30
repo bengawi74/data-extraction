@@ -1,0 +1,15 @@
+[run]
+source = src
+branch = True
+omit =
+    src/extract_pipeline.py
+    src/eda.py
+    src/report.py
+    src/load_db.py
+    src/transform.py
+    src/validate.py
+    src/*__main__*.py
+
+[report]
+skip_empty = True
+show_missing = True
