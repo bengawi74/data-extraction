@@ -1,0 +1,19 @@
+{
+  "customers": [
+    {
+      "id": 1,
+      "name": "Alice",
+      "city": "Toronto"
+    },
+    {
+      "id": 2,
+      "name": "Bob",
+      "city": "Ottawa"
+    },
+    {
+      "id": 3,
+      "name": "Cara",
+      "city": "Markham"
+    }
+  ]
+}
