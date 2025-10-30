@@ -1,0 +1,7 @@
+extends: default
+rules:
+  truthy: disable           # allow values like cache: "pip"
+  line-length:
+    max: 140
+    level: warning
+  document-start: disable   # no need for '---'
