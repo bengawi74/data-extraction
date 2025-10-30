@@ -1,10 +1,11 @@
+---
 name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch: {}
 
 concurrency:
@@ -26,8 +27,8 @@ jobs:
     env:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       FORCE_COLOR: "1"
-      CLI_BIN: "datax"                    # <- your CLI command
-      PACKAGE_NAME: "data_extraction_anwar"  # <- your top-level import
+      CLI_BIN: "datax"
+      PACKAGE_NAME: "data_extraction_anwar"
 
     steps:
       - name: Checkout
@@ -37,7 +38,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          cache: pip
 
       - name: Install project
         shell: bash
@@ -53,7 +54,6 @@ jobs:
             python -m pip install -r requirements.txt
           fi
           python -m pip install pytest pytest-cov >/dev/null 2>&1 || true
-          # optional linters if present
           python -m pip install ruff black >/dev/null 2>&1 || true
 
       - name: Lint (ruff if available)
@@ -77,9 +77,9 @@ PY
           fi
 
       - name: Run tests with coverage
+        shell: bash
         env:
           PYTHONWARNINGS: ignore
-        shell: bash
         run: |
           if python - <<'PY'
 import importlib,sys; sys.exit(0 if importlib.util.find_spec("pytest") else 1)
@@ -97,14 +97,12 @@ PY
         shell: bash
         run: |
           set -euo pipefail
-          # Ensure the editable install put the CLI on PATH
           if ! command -v "$CLI_BIN" >/dev/null 2>&1; then
-            echo "CLI '$CLI_BIN' not found on PATH"; exit 1
+            echo "CLI '$CLI_BIN' not found on PATH"
+            exit 1
           fi
           "$CLI_BIN" --version || "$CLI_BIN" -V || true
-          "$CLI_BIN" --help    >/dev/null 2>&1 || true
-          # If 'datax all' is heavy, comment it out. Keep smoke fast.
-          # "$CLI_BIN" all >/dev/null 2>&1 || true
+          "$CLI_BIN" --help >/dev/null 2>&1 || true
 
       - name: Upload coverage to Codecov
         if: always() && hashFiles('coverage.xml') != ''
