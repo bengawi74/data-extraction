@@ -47,7 +47,7 @@ This experience also enhanced my understanding of real-world data handling and v
 
 ## 🔗 Connect with Me
 
-- 📧 Email: **anwarbengawi@outlook.com**  
+- 📧 Email: **anwar.beng74@gmail.com**  
 - 💼 LinkedIn: [linkedin.com/in/anwar-ali-07484083](https://www.linkedin.com/in/anwar-ali-07484083)  
 - 🌐 GitHub: [bengawi74](https://github.com/bengawi74)
 
