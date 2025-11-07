@@ -52,6 +52,13 @@ This experience also enhanced my understanding of real-world data handling and v
 - 💼 LinkedIn: [linkedin.com/in/anwar-ali-07484083](https://www.linkedin.com/in/anwar-ali-07484083)  
 - 🌐 GitHub: [bengawi74](https://github.com/bengawi74)
 
+## 🎓 Week 4 — Portfolio Showcase Summary
+
+### Career Summary
+Finance and operations leader transitioning into Data & Applied AI. I bring 18 years of financial management experience (budgeting, forecasting, consolidation, IFRS conversion) and I’m now applying modern analytics to real business problems through the Applied AI Solutions Development program at George Brown College.
+
+My portfolio demonstrates hands-on skills in Python, Pandas, Jupyter, Git/GitHub, data extraction (CSV/JSON), exploratory data analysis, and clear communication of results. I’m seeking roles in Ontario such as **Data Analyst / Business Data Analyst / Financial Data Analyst**, where I can combine finance domain expertise with analytics to drive decisions.
+
 ---
 
 **© 2025 Anwar Bengawi | All Rights Reserved**
