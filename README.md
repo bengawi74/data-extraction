@@ -75,6 +75,13 @@ Each week built upon core data analysis concepts, from extraction and cleaning t
 Coming from a strong financial background, this transition into data analytics has shown me how data-driven insights can enhance financial forecasting, operational planning, and strategic decision-making.  
 I now approach problem-solving with a balance of domain expertise and analytical precision, preparing for a career in data analytics that integrates business understanding with AI-powered tools.
 
+## 📚 Table of Contents
+1. [About This Portfolio](#about-this-portfolio)
+2. [Weekly Work](#weekly-work)
+3. [Key Skills Demonstrated](#key-skills-demonstrated)
+4. [Reflection](#reflection)
+5. [Week 4 – Portfolio Showcase Summary](#week-4--portfolio-showcase-summary)
+
 ---
 
 **© 2025 Anwar Bengawi | All Rights Reserved**
