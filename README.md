@@ -80,6 +80,33 @@ Each week built upon core data analysis concepts, from extraction and cleaning t
 Coming from a strong financial background, this transition into data analytics has shown me how data-driven insights can enhance financial forecasting, operational planning, and strategic decision-making.  
 I now approach problem-solving with a balance of domain expertise and analytical precision, preparing for a career in data analytics that integrates business understanding with AI-powered tools.
 
+# Supervised Learning — Regression (Week 5)
+
+**Goal:** build a classical ML model end-to-end and report results clearly.
+
+## Dataset
+- Titanic survival (binary outcome) – using logistic regression as the week’s regression task.
+
+## What this repo contains
+- `Titanic_Logistic_Regression.ipynb` — main notebook
+- `requirements.txt` — dependencies (multi-OS friendly to install cleanly)
+- `data/` (optional) — put local copies here if needed
+
+## Tasks (checklist)
+- [ ] Load & clean data
+- [ ] Exploratory features (brief)
+- [ ] Train/test split
+- [ ] Train logistic regression
+- [ ] Evaluate with accuracy, precision, recall, F1
+- [ ] Confusion matrix + brief interpretation
+- [ ] Short result summary in this README
+
+## How to run (local)
+```bash
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt
+jupyter notebook
+
 ## 📚 Table of Contents
 1. [About This Portfolio](#about-this-portfolio)
 2. [Weekly Work](#weekly-work)
