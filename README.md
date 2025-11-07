@@ -59,6 +59,15 @@ Finance and operations leader transitioning into Data & Applied AI. I bring 18 y
 
 My portfolio demonstrates hands-on skills in Python, Pandas, Jupyter, Git/GitHub, data extraction (CSV/JSON), exploratory data analysis, and clear communication of results. I’m seeking roles in Ontario such as **Data Analyst / Business Data Analyst / Financial Data Analyst**, where I can combine finance domain expertise with analytics to drive decisions.
 
+### Skills and Strengths
+- Strong analytical mindset with a finance and accounting foundation  
+- Skilled in data extraction, cleaning, transformation, and visualization  
+- Proficient in Python, Pandas, Matplotlib, and Seaborn  
+- Experienced with Git/GitHub workflows and version control  
+- Detail-oriented with a focus on accuracy and data integrity  
+- Excellent communication and presentation of data insights  
+- Committed to continuous learning in Applied AI and data analytics
+
 ---
 
 **© 2025 Anwar Bengawi | All Rights Reserved**
