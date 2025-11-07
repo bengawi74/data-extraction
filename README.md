@@ -1,4 +1,7 @@
-![Anwar Bengawi | Data & AI Portfolio Banner](banner.jpg)
+<p align="center">
+  <img src="banner.jpg" alt="Anwar Bengawi | Data & AI Portfolio Banner"
+       width="100%" style="border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
+</p>
 
 # 🎯 Career Portfolio – Data Analysis Projects
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/anwar-ali-07484083)
