@@ -68,6 +68,13 @@ My portfolio demonstrates hands-on skills in Python, Pandas, Jupyter, Git/GitHub
 - Excellent communication and presentation of data insights  
 - Committed to continuous learning in Applied AI and data analytics
 
+- ## Professional Reflection
+Through this portfolio, I’ve strengthened my technical confidence in managing and analyzing datasets using Python and Jupyter.  
+Each week built upon core data analysis concepts, from extraction and cleaning to exploratory analysis and visualization.  
+
+Coming from a strong financial background, this transition into data analytics has shown me how data-driven insights can enhance financial forecasting, operational planning, and strategic decision-making.  
+I now approach problem-solving with a balance of domain expertise and analytical precision, preparing for a career in data analytics that integrates business understanding with AI-powered tools.
+
 ---
 
 **© 2025 Anwar Bengawi | All Rights Reserved**
